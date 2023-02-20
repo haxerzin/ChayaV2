@@ -1,17 +1,17 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/BobEXP/ChayaV2"><img src="https://i.ibb.co/X2WmCxm/chaya.png" alt="ChayaV2"></a>
+  <a href="https://github.com/haxerzin/ChayaV2"><img src="https://raw.githubusercontent.com/haxerzin/ChayaV2/main/assets/ChayaV2_Banner.png" alt="ChayaV2"></a>
   <br>
   ChayaV2
   <br>
 </h1>
 
 <p align="center">
-  <a href="https://github.com/BobEXP/ChayaV2">
+  <a href="https://github.com/haxerzin/ChayaV2">
     <img src="https://img.shields.io/badge/release-v2-green">
   </a>
    </a>
-  <a href="https://github.com/BobEXP/ChayaV2/blob/main/LICENSE">
+  <a href="https://github.com/haxerzin/ChayaV2/blob/main/LICENSE">
       <img src="https://img.shields.io/badge/license-AGPL3-_red.svg">
   </a>
   <a href="https://www.python.org/downloads/">
@@ -58,7 +58,7 @@ ChayaV2 is for your privacy backed by research.
 
 ### Changelog v2
 
-Changelog: https://github.com/BobEXP/ChayaV2/blob/main/CHANGELOG.md
+Changelog: https://github.com/haxerzin/ChayaV2/blob/main/CHANGELOG.md
 
 ## Install
 
@@ -69,7 +69,7 @@ Changelog: https://github.com/BobEXP/ChayaV2/blob/main/CHANGELOG.md
 *OR* run in CMD:
 
 ```bash
-git clone --depth=1 https://github.com/BobEXP/ChayaV2
+git clone --depth=1 https://github.com/haxerzin/ChayaV2
 ```
 
 ## Linux
@@ -81,13 +81,13 @@ Use the following command for faster setup:
 **Command For Ubuntu Based Distros**
 
 ```shell
-sudo apt install python3-pip && sudo apt install git && git clone --depth=1 https://github.com/BobEXP/ChayaV2.git && cd ChayaV2 && pip3 install -r requirements.txt && sudo apt update && sudo apt-add-repository ppa:linuxuprising/libpng12 && sudo apt update && sudo apt install -y libpng12-0
+sudo apt install python3-pip && sudo apt install git && git clone --depth=1 https://github.com/haxerzin/ChayaV2.git && cd ChayaV2 && pip3 install -r requirements.txt && sudo apt update && sudo apt-add-repository ppa:linuxuprising/libpng12 && sudo apt update && sudo apt install -y libpng12-0
 ```
 
 **Command For Debian Based Distros**
 
 ```shell
-sudo apt install python3-pip && sudo apt install git && git clone --depth=1 https://github.com/BobEXP/ChayaV2.git && cd ChayaV2 && pip3 install -r requirements.txt && sudo apt update && sudo apt install build-essential devscripts && cd ~/ && sudo touch /etc/apt/sources.list.d/libpng12.list && echo "deb https://ppa.launchpadcontent.net/linuxuprising/libpng12/ubuntu hirsute main" | sudo tee -a /etc/apt/sources.list.d/libpng12.list && echo "deb-src https://ppa.launchpadcontent.net/linuxuprising/libpng12/ubuntu hirsute main" | sudo tee -a /etc/apt/sources.list.d/libpng12.list && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 1CC3D16E460A94EE17FE581CEA8CACC073C3DB2A && sudo apt update && sudo apt install -y libpng12-0
+sudo apt install python3-pip && sudo apt install git && git clone --depth=1 https://github.com/haxerzin/ChayaV2.git && cd ChayaV2 && pip3 install -r requirements.txt && sudo apt update && sudo apt install build-essential devscripts && cd ~/ && sudo touch /etc/apt/sources.list.d/libpng12.list && echo "deb https://ppa.launchpadcontent.net/linuxuprising/libpng12/ubuntu hirsute main" | sudo tee -a /etc/apt/sources.list.d/libpng12.list && echo "deb-src https://ppa.launchpadcontent.net/linuxuprising/libpng12/ubuntu hirsute main" | sudo tee -a /etc/apt/sources.list.d/libpng12.list && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 1CC3D16E460A94EE17FE581CEA8CACC073C3DB2A && sudo apt update && sudo apt install -y libpng12-0
 ```
 
 ### Using installer.py
@@ -95,7 +95,7 @@ sudo apt install python3-pip && sudo apt install git && git clone --depth=1 http
 You can install the dependencies using installer.py script. Run the following commands in terminal:
 
 ```shell
-sudo apt install python3-pip && sudo apt install git && git clone --depth=1 https://github.com/BobEXP/ChayaV2.git && cd ChayaV2
+sudo apt install python3-pip && sudo apt install git && git clone --depth=1 https://github.com/haxerzin/ChayaV2.git && cd ChayaV2
 ````
 
 **Ubuntu Based Distros**
@@ -169,7 +169,7 @@ Only works for Linux - not tested extensively because FLIF is depreciated!
 
 ## License
 
-ChayaV2 is licensed under <a href="https://github.com/BobEXP/ChayaV2/blob/main/LICENSE">AGPLv3</a>
+ChayaV2 is licensed under <a href="https://github.com/haxerzin/ChayaV2/blob/main/LICENSE">AGPLv3</a>
 
 
 ## Support ChayaV2
