@@ -1,0 +1,12 @@
+argparse
+tqdm
+pycryptodome
+pillow
+numpy
+prettytable
+opencv-python
+pandas
+wget
+requests
+asyncio
+prettyprint
