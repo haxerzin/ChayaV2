@@ -12,9 +12,6 @@
 # [= GitHub: https://github.com/haxerzin/
 # [= License: AGPLv3
 #
-#
-# Quick Tip: Use Python 3.11 for performance
-#
 
 import sys
 import os
