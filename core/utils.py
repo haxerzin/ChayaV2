@@ -11,9 +11,7 @@ import asyncio
 from core.colors import status
 from core.colors import c_white, c_green, c_red, c_yellow, c_blue, c_bold, c_clean
 
-
 # - Utilities - #
-
 
 # yield successive n-sized chunks of text
 def text_chunker(msg: str, n: int) -> []:
@@ -88,8 +86,8 @@ async def banner() -> None:
 	vpath = convert_to_path(str(Path.cwd()) + '/VERSION.txt')    
 	try:
 		with open(vpath) as f:
-			version_number = list(f.readline())
-			print(f" {c_bold}{c_yellow} [ {version_number[0]}.{version_number[1]} ] {c_red} [ 2023 ]{c_clean}")
+			version_number = f.readline()
+			print(f" {c_bold}{c_yellow} [ v{version_number} ] {c_red} [ 2023 ]{c_clean}")
 	except Exception as e:
 		print(f" {c_bold}{c_yellow}[ v2 ] {c_red} [ 2023 ]{c_clean}")
 	print(f" {c_blue}{c_bold} [ https://github.com/haxerzin/ ]{c_clean}")
