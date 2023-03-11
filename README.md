@@ -151,15 +151,14 @@ python chaya.py -dec -amlchi -exmem
 
 #### Compression
 
-Only works for Linux - not tested extensively because FLIF is depreciated!
+Compression with FLIF is disabled and no longer maintained. It works in Linux with ChayaV1 but lacks security of your steg images. Don't use.
 
 ### Output Data
 
 - Enc + Steg images -> /autoexp/image_steg/
 - Enc + Steg + Comp images -> /autoexp/image_steg_comp/
 - Cipher data -> /appdata/cipher_data.json
-- Analysis data -> /appdata/analysis_results_enc.json (suspended)
-
+- Analysis data -> /appdata/analysis_results_enc.json (abandoned - 3rd party soydev can't update their damn repo)
 
 ### Issues - v2
 
