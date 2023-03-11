@@ -1,5 +1,16 @@
 # Version 2.0
 
+### Version 2.0.0.2
+
+- [x] **Fixed**: LPS_Encode and LPS_Decode Function
+- [x] **Fixed**: AES_GCM Function
+- [x] **Fixed**: Name error for SHA256 signature function
+- [x] **Fixed**: Github version checking on run
+- [x] **Fixed**: Disable FLIF compression/decompression on GNU/Linux
+- [x] **Improved**: Non-PRNG choice for steganography using secrets
+- [x] **Improved**: Non-PRNG random_id in utils using secrets
+- [x] **Removed**: Unused imports in steganography
+
 ### Version 2.0.0.1
 
 - [x] **Improved**: simplified updater

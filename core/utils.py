@@ -1,5 +1,5 @@
 import os
-from random import randint
+import secrets
 import hashlib
 import wget
 import requests
@@ -109,12 +109,13 @@ async def get_files_in_dir(dir_path: str) -> []:
 
 # Function > Generate random number
 def generate_random_id() -> int:
-	random_id = randint(1,10001)
+	Secure_RNG = secrets.SystemRandom()
+	random_id = Secure_RNG.randrange(1, 13337)
 	return random_id
 
 
 # Function > Generate SHA-256 hash for file
-def generate_sha256_signature(file_path):
+def generate_filesignature_sha256(file_path):
   with open(file_path, 'rb') as f:
     sha256_hash = hashlib.sha256()
     # read the file in blocks of 4KB

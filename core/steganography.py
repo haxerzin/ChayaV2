@@ -1,19 +1,16 @@
-import cv2, binascii
-from PIL import Image
-from random import choice
+import cv2
+import binascii
 import numpy as np
 import sys
-from itertools import repeat
-import itertools
-import struct
-import binascii
-import math
+from PIL import Image
+from secrets import choice
 
 from core.colors import *
 from core.utils import status
 
 # set numpy threashold
 np.set_printoptions(threshold=sys.maxsize)
+
 
 # Function > Convert Image Pixel Number To Coordinate Value
 def pixelNumberToCoordinate(n, img):
@@ -64,13 +61,8 @@ def write(data, pixel, nextP, img):
 
 
 # Function > Binary Formating String
-def toBin(string: str) -> bytes:
-    # use struct module to convert string to bytes object
-    b = struct.pack("s", string)
-    # use bin function to convert bytes object to binary string
-    h = "{:x}".format(int.from_bytes(b, "big"))
-    # use binascii.unhexlify to convert hexadecimal string to bytes object
-    return binascii.unhexlify(h)
+def toBin(string):
+    return ''.join(format(x, 'b').zfill(8) for x in string)
 
 
 # Function > Convert Strings In Chunks Of Length
@@ -126,29 +118,31 @@ def LPS_Encode(src, secret_message, dst, startingPixel=(0,0)):
 
 
 # Function > Binary To String Conversion
-def binToString(i: str) -> bytes:
+def binToString(i):
     # pad i to be a multiple of 8
-    padding = 8 - len(i) % 8
-    i = i.rjust(len(i) + padding, "0")
-    # use format method to build hexadecimal string
-    h = "{:x}".format(int(i, 2))
-    # use binascii.unhexlify to convert hexadecimal string to bytes object
-    return binascii.unhexlify(h)
+    if len(i) % 8 != 0:
+        r = 8-(len(i)%8)
+        i = i + "0"*r
+    h = hex(int(i, 2))[2:]
+    if len(h) % 2 != 0:
+        h = "0"+h
+    # remove last null byte
+    return binascii.unhexlify(h)[:-1]
 
 
 # Function > Get Data From Encoded Image
 def getData(img, startX, startY):
-    # use struct.pack and struct.unpack to convert between pixel coordinates and pixel numbers
-    n = struct.pack("<HH", startX, startY)
-    n = struct.unpack("<I", n)[0]
+    n = coordinateToPixelNumber(startX, startY, img)
     pix = img.load()
-    # use bit_length method to compute length of binary representation of maximum pixel value
-    BLOCKLEN = max(img.size).bit_length()
-    # use generator expression to build nx, ny, and s strings
-    nx = "".join(str((pix[n+i][1] >> 1) & 1) for i in repeat(BLOCKLEN))
-    ny = "".join(str((pix[n+i][2] >> 1) & 1) for i in repeat(BLOCKLEN))
-    s = "".join(str((pix[n+i][0] >> 1) & 1) for i in repeat(BLOCKLEN))
-    # use int function to convert binary strings to integers
+    BLOCKLEN = len(bin(max(img.size))[2:])
+    nx = ""
+    ny = ""
+    s = ""
+    for i in range(BLOCKLEN):
+        c = pixelNumberToCoordinate(n+i, img)
+        s += str(pix[c][0] & 1)
+        nx += str(pix[c][1] & 1)
+        ny += str(pix[c][2] & 1)
     nx = int(nx, 2)
     ny = int(ny, 2)
     return (s,(nx, ny))
@@ -182,18 +176,19 @@ def LSB_Encode(src, message, dest):
     b_message = ''.join([format(ord(i), "08b") for i in message])
     req_pixels = len(b_message)
     if req_pixels > total_pixels:
-        status(3, "Need Larger File Size")
+        msg_status("ERROR", "Need Larger File Size")
         exit()
     else:
         index=0
-        for p, q in itertools.product(range(total_pixels), range(m, n)):
-            if index < req_pixels:
-                array[p][q] = int(bin(array[p][q])[2:9] + b_message[index], 2)
-                index += 1
+        for p in range(total_pixels):
+            for q in range(m, n):
+                if index < req_pixels:
+                    array[p][q] = int(bin(array[p][q])[2:9] + b_message[index], 2)
+                    index += 1
         array=array.reshape(height, width, n)
         enc_img = Image.fromarray(array.astype('uint8'), img.mode)
         enc_img.save(dest)
-        status(2, "LSB Steganography Successful")
+        msg_status("INFO", "LSB Steganography Successful")
 
 
 # Function > LSB Decode Image
@@ -222,4 +217,4 @@ def LSB_Decode(src):
         secret_message = message[:-5]
         return secret_message
     else:
-        status(3, "No hidden message found using")
+        msg_status("ERROR", "No hidden message found using")

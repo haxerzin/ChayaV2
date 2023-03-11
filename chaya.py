@@ -247,12 +247,15 @@ async def _ENCRYPTER(raw_image_path, raw_image) -> None:
         case "windows":
             pass
         case "linux":
-            # /* ---- PERFORM COMPRESSION ---- */
+            # /* ---- PERFORM COMPRESSION :: disabled flif ---- */
+            '''
             steg_image_path = f"autoexp/image_steg/{raw_image}"
             comp_image_path = f"autoexp/image_steg_comp/{raw_image[:-4]}.flif"
             image_information['comp_image_path'] = comp_image_path
             flif('e', steg_image_path, comp_image_path)
             image_information['comp_image_sha256'] = generate_filesignature_sha256(image_information['comp_image_path'])
+            '''
+            pass
 
     # /* ---- SAVE IMAGE INFORMATION ---- */
     image_information['message_length'] = utf8len(image_information['secret_message'])
@@ -271,8 +274,9 @@ async def _DECRYPTER(raw_image_path) -> None:
         case "windows":
             pass
         case "linux":
-            # /* ---- PERFORM DECOMPRESSION ---- */
-            flif('d', image_information['steg_image_path'], image_information['comp_image_path'])
+            # /* ---- PERFORM DECOMPRESSION :: disabled flif ---- */
+            #flif('d', image_information['steg_image_path'], image_information['comp_image_path'])
+            pass
     
     # /* ---- PERFORM DECODING ---- */
     if argument_lps:
@@ -443,14 +447,21 @@ async def run_manager() -> None:
 
 # Function > GitHub Script Version
 async def github_version() -> int:
-    runtime = current_runtime()
-    url = f"https://raw.githubusercontent.com/haxerzin/ChayaV2/{runtime}/VERSION.txt"
-    try:
-        response = urllib.request.urlopen(url)
-        for content in response:
-            return int(content)
-    except Exception as e:
-        raise e
+    check_internet = await internet_on()
+    match check_internet:
+        case True:
+            runtime = current_runtime()
+            url = f"https://raw.githubusercontent.com/haxerzin/ChayaV2/{runtime}/VERSION.txt"
+            try:
+                response = urllib.request.urlopen(url)
+                for content in response:
+                    return int(content)
+            except Exception as e:
+                status(3, "Unable to get 'raw.githubusercontent.com' for update!")
+                pass
+        case False:
+            status(3, "Cannot Update: You Are Offline")
+            pass
 
 
 # Function > Current Script Version
@@ -466,15 +477,16 @@ async def current_version() -> int:
 # Function > Compare Current Version
 async def version_check() -> int:
     current_v, github_v = await current_version(), await github_version()
-    if current_v < github_v:
-        status(0, f"  [ Version: {c_red}Outdated")
-        return 0
-    elif current_v == github_v:
-        status(0, f"  [ Version: {c_green}Latest\n")
-        return 1
-    elif current_v > github_v:
-        status(0, f"  [ Version: {c_blue}Ahead\n")
-        return 2
+    if github_v != None:
+        if current_v < github_v:
+            status(0, f"  [ Version: {c_red}Outdated")
+            return 0
+        elif current_v == github_v:
+            status(0, f"  [ Version: {c_green}Latest\n")
+            return 1
+        elif current_v > github_v:
+            status(0, f"  [ Version: {c_blue}Ahead\n")
+            return 2
 
 
 # Function > Download Updater

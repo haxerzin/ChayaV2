@@ -163,9 +163,7 @@ Only works for Linux - not tested extensively because FLIF is depreciated!
 
 ### Issues - v2
 
-- Updater Fix
-- Update check fix
-
+- Updater has few issues
 
 ## License
 
