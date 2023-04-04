@@ -85,7 +85,6 @@ async def read_cipher_data_objects_value_from_file(object_name):
 
 # Function > Architecture Mode Manager
 async def arc_setter() -> int:
-    architecture_mode = 1
     if argument_amsin:
         architecture_mode = 0
     elif argument_amsmm:
@@ -95,7 +94,7 @@ async def arc_setter() -> int:
     elif argument_amrchi:
         architecture_mode = 3
     else:
-        architecture_mode = 1
+        architecture_mode = 3
     return architecture_mode
 
 
