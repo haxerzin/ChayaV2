@@ -4,6 +4,7 @@ import numpy as np
 import sys
 from PIL import Image
 from secrets import choice
+from random import sample
 
 from core.colors import *
 from core.utils import status
@@ -24,10 +25,8 @@ def coordinateToPixelNumber(x, y, img):
 
 # Function > Set the Least-Significant-Bit Value
 def setLSB(v, state):
-    if state == "0":
-        return v & 0b11111110
-    elif state == "1":
-        return v | 0b00000001
+    if state in ("0", "1"):
+        return (v & 0b11111110) | int(state)
     else:
         print(f"invalid state: {state}")
         return v
@@ -38,26 +37,19 @@ def write(data, pixel, nextP, img):
     pix = img.load()
     x, y = pixelNumberToCoordinate(nextP, img)
     l = len(data)
-    # binari representation of next pixel x
-    col = bin(x)[2:].zfill(l)
-    # binari representation of next pixel y
-    lin = bin(y)[2:].zfill(l)
+    col, lin = bin(x)[2:].zfill(l), bin(y)[2:].zfill(l)
 
-    for i in range(pixel, pixel+l):
-        p = pix[pixelNumberToCoordinate(i, img)]
+    for i in range(pixel, pixel + l):
+        coord = pixelNumberToCoordinate(i, img)
+        p = pix[coord]
+        new_pixel = (
+            setLSB(p[0], data[i - pixel]),
+            setLSB(p[1], col[i - pixel]),
+            setLSB(p[2], lin[i - pixel]),
+        )
         if len(p) == 4:
-            # With alpha channel
-            pix[pixelNumberToCoordinate(i, img)] = (
-            setLSB(p[0], data[i-pixel]),
-            setLSB(p[1], col[i-pixel]),
-            setLSB(p[2], lin[i-pixel]),
-            p[3])
-        else:
-            # no alpha channel
-            pix[pixelNumberToCoordinate(i, img)] = (
-            setLSB(p[0], data[i-pixel]),
-            setLSB(p[1], col[i-pixel]),
-            setLSB(p[2], lin[i-pixel]))
+            new_pixel += (p[3],)
+        pix[coord] = new_pixel
 
 
 # Function > Binary Formating String
@@ -72,62 +64,48 @@ def chunkstring(string, length):
 
 # Function > Encode Using LSB-LPS Technique
 def LPS_Encode(src, secret_message, dst, startingPixel=(0,0)):
-    coordinate_vals_array = []
     img = Image.open(src)
     BLOCKLEN = len(bin(max(img.size))[2:])
-    # The number of pixels in the image
-    total = img.size[0] * img.size[1]
-    # list of available block positions
-    AVAILABLE = [x for x in range(1, total-1, BLOCKLEN)]
-    # Check if the last position is big enough
-    if AVAILABLE[-1] + BLOCKLEN >= total:
+    total_pixels = img.size[0] * img.size[1]
+    AVAILABLE = [x for x in range(1, total_pixels - 1, BLOCKLEN)]
+    if AVAILABLE[-1] + BLOCKLEN >= total_pixels:
         AVAILABLE.pop()
 
-    d = chunkstring(toBin(secret_message.encode('utf8')),BLOCKLEN)
+    d = chunkstring(toBin(secret_message.encode("utf8")), BLOCKLEN)
     n = len(d)
-    # choose the first pixel
-    pixel = coordinateToPixelNumber(startingPixel[0], startingPixel[1], img)
+    pixel = coordinateToPixelNumber(*startingPixel, img)
+    
     if pixel == 0:
-        # Choose a random location because (0, 0) is not authorized
         pixel = choice(AVAILABLE)
         AVAILABLE.remove(pixel)
         startingPixel = pixelNumberToCoordinate(pixel, img)
-    for i in range(n-1):
-        # pointer to the next pixel
-        nextP = choice(AVAILABLE)
+
+    # Shuffle AVAILABLE list once and iterate through it
+    shuffled_AVAILABLE = sample(AVAILABLE, len(AVAILABLE))
+
+    for nextP in shuffled_AVAILABLE[:n - 1]:
+        write(d.pop(0), pixel, nextP, img)
         AVAILABLE.remove(nextP)
-        write(d[i], pixel, nextP, img)
-        # switch to next pixel
         pixel = nextP
-    # last pointer towards NULL (0, 0)
-    write(d[-1], pixel, 0, img)
+
+    write(d.pop(), pixel, 0, img)
     img.save(dst)
     img.close()
 
-    # startingPixel format = (x, y)
-    pixel_range = str(startingPixel)
-    pixel_range = pixel_range[1:-1] # x, y
-    pixel_coordinate_values = pixel_range.split(",")
-
-    # save lps coordinate values to array
-    coordinate_vals_array.append(pixel_coordinate_values[0])
-    coordinate_vals_array.append(pixel_coordinate_values[1])
-
-    # return the coordinates
-    return coordinate_vals_array
+    return [str(startingPixel[0]), str(startingPixel[1])]
 
 
 # Function > Binary To String Conversion
 def binToString(i):
-    # pad i to be a multiple of 8
-    if len(i) % 8 != 0:
-        r = 8-(len(i)%8)
-        i = i + "0"*r
-    h = hex(int(i, 2))[2:]
-    if len(h) % 2 != 0:
-        h = "0"+h
-    # remove last null byte
-    return binascii.unhexlify(h)[:-1]
+    # Pad i to be a multiple of 8
+    padding = (-len(i)) % 8
+    i += "0" * padding
+    # Convert padded binary string to bytes
+    b = bytearray()
+    for idx in range(0, len(i), 8):
+        b.append(int(i[idx:idx + 8], 2))
+    # Remove last null byte
+    return bytes(b[:-1])
 
 
 # Function > Get Data From Encoded Image
